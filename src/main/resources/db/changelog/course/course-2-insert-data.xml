@@ -1,0 +1,27 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="course-2-1" author="lubov">
+        <insert tableName="course">
+            <column name="title" value="Math"/>
+            <column name="teacher" value="Dr. Smith"/>
+        </insert>
+        <insert tableName="course">
+            <column name="title" value="Physics"/>
+            <column name="teacher" value="Prof. Johnson"/>
+        </insert>
+
+        <rollback>
+            <delete tableName="course">
+                <where>title = 'Math' and teacher = 'Dr. Smith'</where>
+            </delete>
+
+            <delete tableName="course">
+                <where>title = 'Physics' and teacher = 'Prof. Johnson'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

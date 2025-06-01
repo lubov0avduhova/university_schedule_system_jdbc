@@ -1,0 +1,27 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="student-2-1" author="lubov">
+        <insert tableName="student">
+            <column name="name" value="Alice"/>
+            <column name="email" value="alice@mail.com"/>
+        </insert>
+        <insert tableName="student">
+            <column name="name" value="Bob"/>
+            <column name="email" value="bob@mail.com"/>
+        </insert>
+
+        <rollback>
+            <delete tableName="student">
+                <where>name = 'Alice' and email = 'alice@mail.com'</where>
+            </delete>
+
+            <delete tableName="student">
+                <where>name = 'Bob' and email = 'bob@mail.com'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

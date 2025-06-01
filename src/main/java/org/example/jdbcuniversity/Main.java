@@ -5,46 +5,53 @@ import org.example.jdbcuniversity.dao.EnrollmentDao;
 import org.example.jdbcuniversity.dao.StudentDao;
 import org.example.jdbcuniversity.model.Course;
 import org.example.jdbcuniversity.model.Student;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 public class Main {
+
+    private static final Logger log = LoggerFactory.getLogger(Main.class);
+
     public static void main(String[] args) {
         StudentDao studentDao = new StudentDao();
         CourseDao courseDao = new CourseDao();
         EnrollmentDao enrollmentDao = new EnrollmentDao();
 
-        // 1. Создаём студентов и курсы
-        Student s1 = new Student("Alice", "alice@mail.com");
-        Student s2 = new Student("Bob", "bob@mail.com");
-        studentDao.save(s1);
-        studentDao.save(s2);
+        log.info("Запуск University JDBC System");
 
-        Course c1 = new Course("Math", "Dr. Smith");
-        Course c2 = new Course("Physics", "Prof. Johnson");
-        courseDao.save(c1);
-        courseDao.save(c2);
+        try {
+            demo(studentDao, courseDao, enrollmentDao);
+        } catch (Exception e) {
+            log.error("Ошибка при выполнении программы", e);
+        }
 
-        // 2. Записываем на курсы
-        enrollmentDao.enrollStudent(s1.getId(), c1.getId());
-        enrollmentDao.enrollStudent(s2.getId(), c1.getId());
-        enrollmentDao.enrollStudent(s2.getId(), c2.getId());
+        log.info("Программа завершена");
+    }
 
-        // 3. Демонстрация
-        System.out.println("Все студенты:");
-        studentDao.findAll().forEach(System.out::println);
 
-        System.out.println("\nКурсы студента Bob:");
-        enrollmentDao.findCoursesByStudentId(s2.getId()).forEach(System.out::println);
+    private static void demo(StudentDao studentDao, CourseDao courseDao, EnrollmentDao enrollmentDao) {
+        printSection("Все студенты", studentDao.findAll());
 
-        System.out.println("\nСтуденты на курсе Math:");
-        enrollmentDao.findStudentsByCourseId(c1.getId()).forEach(System.out::println);
+        Student bob = studentDao.findByName("Bob").orElseThrow();
+        printSection("Курсы студента Bob", enrollmentDao.findCoursesByStudentId(bob.getId()));
 
-        System.out.println("\nПоиск студентов по имени 'Al':");
-        enrollmentDao.findStudentsByNamePart("Al").forEach(System.out::println);
+        Course math = courseDao.findByTitle("Math").orElseThrow();
+        printSection("Студенты на курсе Math", enrollmentDao.findStudentsByCourseId(math.getId()));
 
-        System.out.println("\nПроверка: Bob записан на Math?");
-        System.out.println(enrollmentDao.isStudentEnrolled(s2.getId(), c1.getId()));
+        printSection("Поиск студентов по имени 'Al'", enrollmentDao.findStudentsByNamePart("Al"));
 
-        System.out.println("\nСколько студентов на курсе Physics:");
-        System.out.println(enrollmentDao.countStudentsInCourse(c2.getId()));
+        boolean enrolled = enrollmentDao.isStudentEnrolled(bob.getId(), math.getId());
+        log.info("Bob записан на Math? {}", enrolled ? "Да" : "Нет");
+
+        Course physics = courseDao.findByTitle("Physics").orElseThrow();
+        long count = enrollmentDao.countStudentsInCourse(physics.getId());
+        log.info("Кол-во студентов на Physics: {}", count);
+    }
+
+    private static <T> void printSection(String title, List<T> items) {
+        log.info("\n {}:", title);
+        items.forEach(item -> log.info("   → {}", item));
     }
 }

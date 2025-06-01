@@ -1,0 +1,26 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="course-2-1" author="lubov">
+        <insert tableName="enrollment">
+            <column name="student_id" valueNumeric="1"/>
+            <column name="course_id" valueNumeric="1"/>
+        </insert>
+        <insert tableName="enrollment">
+            <column name="student_id" valueNumeric="2"/>
+            <column name="course_id" valueNumeric="1"/>
+        </insert>
+
+        <rollback>
+            <delete tableName="enrollment">
+                <where>student_id = 1 AND course_id = 1</where>
+            </delete>
+            <delete tableName="enrollment">
+                <where>student_id = 2 AND course_id = 1</where>
+            </delete>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

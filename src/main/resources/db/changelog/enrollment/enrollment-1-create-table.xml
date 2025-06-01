@@ -1,0 +1,47 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="enrollment-1-1" author="lubov">
+
+
+        <createTable tableName="enrollment">
+            <column name="student_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="course_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+
+        <addPrimaryKey
+                tableName="enrollment"
+                columnNames="student_id,course_id"
+                constraintName="pk_enrollment"/>
+
+
+        <addForeignKeyConstraint
+                baseTableName="enrollment"
+                baseColumnNames="student_id"
+                constraintName="fk_enrollment_student"
+                referencedTableName="student"
+                referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint
+                baseTableName="enrollment"
+                baseColumnNames="course_id"
+                constraintName="fk_enrollment_course"
+                referencedTableName="course"
+                referencedColumnNames="id"/>
+
+        <rollback>
+            <dropTable tableName="enrollment"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>
+
+
+

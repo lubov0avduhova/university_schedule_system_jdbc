@@ -1,15 +1,19 @@
 package org.example.jdbcuniversity.model;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.validation.constraints.NotNull;
+import lombok.*;
 
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@ToString
 public class Course {
+    @NotNull
     private Long id;
+    @NotNull
     private String title;
+    @NotNull
     private String teacher;
 
     public Course(String title, String teacher) {
